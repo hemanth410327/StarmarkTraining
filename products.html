@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="products.css">
+    <title>Shopping</title>
+
+    <style>
+        #DisplayAllProduct{
+            display: none;
+        }
+
+        #addProductForm{
+            display: none;
+        }
+
+        #updateProductForm{
+            display: none;
+        }
+    </style>
+    <script>
+
+       // window.addEventListener("load",() => getAllProducts())
+
+        function getAllProducts() {
+
+            document.getElementById("addProductForm").style.display = "none"
+            document.getElementById("updateProductForm").style.display = "none"
+            document.getElementById("DisplayAllProduct").style.display = "grid"
+            displayAll(prod.getAllProducts())
+        }
+
+        function clear() {
+
+            document.getElementById("searchById").value = "" 
+        }
+
+        function onClickAdd() {
+            document.getElementById("DisplayAllProduct").style.display = "none"
+            document.getElementById("updateProductForm").style.display = "none"
+            document.getElementById("addProductForm").style.display = "block"
+        }
+
+        function displayAll(items){
+            if(items != null){
+
+            const section = document.getElementById("DisplayAllProduct")
+            section.innerHTML = ""
+            section.innerHTML += `<h2>Product List</h2>`
+            section.innerHTML += `<div id="container"> </div>`
+
+            let indiaCurrency = new Intl.NumberFormat('en-IN',
+            {
+                style:'currency',
+                currency : 'INR'
+            })  
+
+            const parentDiv = document.getElementById("container")
+
+            for(const values of items){
+                const div = document.createElement("div")
+
+                div.innerHTML = `
+                <h3>${values.name}</h3>
+                <img src="./images/shopping.jfif" alt="${values.name}">
+                <p id="price">${indiaCurrency.format(values.price)} </p>
+                <p>${values.description}</p>
+                <button onclick="onFillForm(${values.id})">update</button>
+                `
+
+                parentDiv.appendChild(div)
+            }}
+            else{
+                alert("No products available")
+            }
+        }
+
+        function onFillForm(id) {
+
+            document.getElementById("DisplayAllProduct").style.display = "none"
+            document.getElementById("updateProductForm").style.display = "block"
+            document.getElementById("addProductForm").style.display = "none"
+
+            const productupdate = prod.getProductById(id)
+            document.getElementById("updateProductId").value = productupdate.id
+            document.getElementById("updateProductName").value = productupdate.name
+            document.getElementById("updateProductPrice").value = productupdate.price
+            document.getElementById("updateProductDescription").value = productupdate.description
+
+
+        }
+        function onUpdate(){
+            // prod.putProduct(new product(1,"condom","asdajs",1234,"nice"))
+            // console.log(prod.getAllProducts())
+
+           try{ prod.putProduct(new product(
+                    document.getElementById("updateProductId").value,
+                    document.getElementById("updateProductName").value,
+                    " ",
+                    document.getElementById("updateProductPrice").value,
+                    document.getElementById("updateProductDescription").value,
+                ))
+            alert("Product updated successfully!!!")
+            getAllProducts()
+            }
+                catch(ex){
+                    alert("SOmething went wrong!!")
+                }
+        }
+
+        function onSearch() {
+            const id = document.getElementById("searchById").value
+            try{
+            const result = prod.getProductById(id)
+            document.getElementById("DisplayAllProduct").style.display = "block"
+            document.getElementById("updateProductForm").style.display = "none"
+            document.getElementById("addProductForm").style.display = "none"
+            displayAll([result])
+            clear()
+            }
+            catch(ex){
+                alert(`Product Id ${id} doesn't exist.`)
+                clear()
+                getAllProducts()
+            }
+        }
+
+        function onAdd() {
+           try{ prod.postProduct(
+                new product(
+                    document.getElementById("productId").value,
+                    document.getElementById("productName").value,
+                    " ",
+                    document.getElementById("productPrice").value,
+                    document.getElementById("productDescription").value,
+                )
+            )
+            alert("Product added successfully")
+            getAllProducts()
+        }
+            catch(ex){
+                alert("Something went wrong!!")
+            }
+
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Online Shopping Portal</h1>
+        <hr>
+    </header>
+
+    <nav>
+        <ol>
+            <li><button onclick="getAllProducts()">Get all Products</button></li>
+            <li><button onclick="onClickAdd()">Add Product</button></li>
+            <li><input type="number" placeholder="Search by ID" id="searchById"> <button onclick="onSearch()">Search</button></li>
+        </ol>
+    </nav>
+  <!--   <p id="display"></p>
+    <button onclick="onUpdate()">update</button>
+
+    <button onclick="onSearch()">Search</button> -->
+
+    <section id="DisplayAllProduct">
+    </section>
+
+    <section id="addProductForm" class="form">
+        <h3>Add Products</h3>
+        <div>
+            <label for="productId">Product Id</label>
+            <input type="number" id="productId">
+        </div>
+        <div>
+            <label for="productName">Name</label>
+            <input type="text" id="productName">
+        </div>
+        <div>
+            <label for="productPrice">Price</label>
+            <input type="number" id="productPrice">
+        </div>
+        <div>
+            <label for="productDescription">Description</label>
+            <input type="text" id="productDescription">
+        </div>
+
+        <button onclick="onAdd()">Add</button>
+    </section>
+
+    <section id="updateProductForm" class="form">
+        <h3>Update Product</h3>
+        <div>
+            <label for="id">Product Id</label>
+            <input type="number" id="updateProductId" disabled>
+        </div>
+        <div>
+            <label for="name">Name</label>
+            <input type="text" id="updateProductName">
+        </div>
+        <div>
+            <label for="price">Price</label>
+            <input type="number" id="updateProductPrice">
+        </div>
+        <div>
+            <label for="description">Description</label>
+            <input type="text" id="updateProductDescription">
+        </div>
+
+        <button onclick="onUpdate()">Update</button>
+    </section>
+
+    <span id="errorMessage"></span>
+<script src="./products.js"></script>
+</body>
+</html>
