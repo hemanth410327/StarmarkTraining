@@ -1,0 +1,147 @@
+*{
+    box-sizing: border-box;
+    margin: 0%;
+    padding: 0%;
+}
+
+body{
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: larger;
+    line-height:normal;
+    background-color: rgb(245,246,250);
+}
+header{
+    background-color: rgb(255,255,255);
+}
+header h1{
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    margin-left: 4rem;
+    text-align: center;
+    color: rgb(57,64,73);
+}
+
+nav ol{
+    margin-left: 4rem;
+    display: flex;
+    gap: 2rem;
+    margin-top: 0.8rem;
+    list-style-type: none;
+    width: 90%;
+    padding-bottom: 0.9rem;
+}
+
+section{
+    margin: 1rem 5rem;
+}
+
+#DisplayAllProduct #container{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 1rem;
+}
+
+#DisplayAllProduct h2{
+    margin-bottom: 1rem;
+}
+
+#container div{
+    border: 1px solid rgb(196, 196, 228);
+    padding: 1rem;
+    border-radius: 0.4rem;
+    background-color: white;
+}
+
+h3{
+    text-transform:uppercase;
+    margin-bottom: 0.6rem;
+    color: rgb(57,64,73);
+}
+
+img{
+    width: 100%;
+    height: 200px;
+    margin-bottom: 0.8rem;
+}
+
+#price{
+    font-size: 25px;
+}
+#container select{
+    display: block;
+    margin-top: 0.6rem;
+    width: 100px;
+    height: 30px;
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 0.5rem;
+}
+#container button{
+    padding: 0.4rem;
+    width: 6.3rem;
+    margin-top: 0.6rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    border: 0.3px solid rgb(135, 131, 131);
+    background-color: rgb(0,103,221);
+    color: white;
+}
+nav{
+    border-bottom: 1px solid black;
+    box-shadow:1px 0.1px 0.1px;
+    background-color: rgb(250,251,253);
+}
+ol li button{
+    padding: 0.6rem;
+    font-size: 16px;
+    width: 9rem;
+    margin-top: 0.6rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    border: 0.3px solid rgb(135, 131, 131);
+    background-color: rgb(0,103,221);
+    color: white;
+}
+
+#generatebill{
+    border:1px solid black;
+    margin: 5% 35%;
+    padding: 1.8rem;
+    border-radius: 0.5rem;
+    background-color: white;
+}
+
+#generatebill h2{
+    text-align: center;
+    margin-bottom: 15px;
+    color: rgb(57,64,73);
+}
+#generatebill div{
+    display: flex;
+    gap:1rem;
+    
+}
+
+#generatebill p{
+    font-size: 25px;
+    padding-top: 1rem;
+    margin-bottom: 1rem;
+    color: rgb(57,64,73);
+}
+
+#generatebill button{
+    padding: 0.6rem;
+    font-size: 16px;
+    width: 9rem;
+    margin-top: 0.6rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    border: 0.3px solid rgb(135, 131, 131);
+    background-color: rgb(0,103,221);
+    color: white;
+}
+
+button:hover, #generatebill button:hover, #container button:hover{
+    color: black;
+}

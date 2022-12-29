@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="../../jQuerylib/jquery-3.6.2.min.js"></script>
+    <link rel="stylesheet" href="./onlineFoodDelivery.css">
+    <script src="./onlineFoodDelivey.js"></script>
+    <title>Online Food Delivery</title>
+    <!-- <img src="./image/eggRice.jfif" alt=""> -->
+    <script>
+        let max = []
+
+        function viewFood() {
+            $("ol>li:last>button").hide()
+            $("section:last").hide()
+            $("section:first").show()
+            const foodDetails = foodDetailsRepo.getAllFoodDetails()
+            displayAll(foodDetails)
+        }
+
+        function displayAll(items) {
+            if (items != null) {
+
+                const section = document.getElementById("DisplayAllProduct")
+                section.innerHTML = ""
+                section.innerHTML += `<h2>Food List</h2>`
+                section.innerHTML += `<div id="container"> </div>`
+
+                let indiaCurrency = new Intl.NumberFormat('en-IN',
+                    {
+                        style: 'currency',
+                        currency: 'INR'
+                    })
+
+                const parentDiv = document.getElementById("container")
+
+                for (const values of items) {
+                    const div = document.createElement("div")
+
+                    div.innerHTML = `
+                <h3>${values.foodName}</h3>
+                <img src="${values.foodImg}" alt="${values.foodName}">
+                <p id="price">${indiaCurrency.format(values.foodPrice)}</p>
+                <select>
+                     <option value="1">1</option>
+                     <option value="2">2</option>
+                     <option value="3">3</option>
+                     <option value="4">4</option>
+                     <option value="5">5</option>
+                 </select>
+                <button onclick="onClickAddToCart(${values.foodId})">Add to Cart</button>
+                `
+
+                    parentDiv.appendChild(div)
+                }
+            }
+            else {
+                alert("No products available")
+            }
+        }
+
+        function onClickAddToCart(id) {
+
+            console.log(id)
+            const quantity = $(`select:eq(${id - 1})`).val()
+            console.log(quantity)
+            const data = foodDetailsRepo.getFoodDetailsById(id)
+            data.quantity = Number(quantity)
+            foodDetailsRepo.addToCart(data)
+            alert("Food Added to cart successfully")
+            console.log(foodDetailsRepo.cart)
+            console.log(data)
+            return myOrders()
+        }
+
+        function myOrders() {
+            $("section:first").show()
+            const cartData = foodDetailsRepo.getCartDetails()
+            if (cartData.size == 0) {
+                alert("No Items in Cart!!")
+                return viewFood()
+            }
+            const cartdataArray = []
+
+            for (const key of cartData.keys()) {
+                cartdataArray.push(cartData.get(key))
+            }
+
+
+            console.log(cartdataArray)
+            displayCart(cartdataArray)
+        }
+
+
+        function displayCart(items) {
+            $("section:last").hide()
+            $("ol>li:last>button").show()
+
+            if (items != null) {
+
+                const section = document.getElementById("DisplayAllProduct")
+                section.innerHTML = ""
+                section.innerHTML += `<h2>My Cart</h2>`
+                section.innerHTML += `<div id="container"> </div>`
+
+                let indiaCurrency = new Intl.NumberFormat('en-IN',
+                    {
+                        style: 'currency',
+                        currency: 'INR'
+                    })
+
+                const parentDiv = document.getElementById("container")
+
+                for (const values of items) {
+                    const div = document.createElement("div")
+
+                    div.innerHTML = `
+                         <h3>${values.foodName}</h3>
+                         <img src="${values.foodImg}" alt="${values.foodName}">
+                        <p id="price">${indiaCurrency.format(values.foodPrice)}</p>
+                        <p style="margin:9px 0px 9px 0px;">Quantity : ${values.quantity}</p>
+                        <button onclick="onClickRemoveFromCart('${values.foodName}')">Remove</button>
+                        `
+
+                    parentDiv.appendChild(div)
+                }
+            }
+            else {
+                alert("No products available")
+            }
+        }
+
+        function onClickRemoveFromCart(key) {
+            if (confirm(`Do you want to delete ${key}?`)) {
+                foodDetailsRepo.deleteFromCart(key)
+                console.log(foodDetailsRepo.getCartDetails())
+            }
+
+            myOrders()
+        }
+
+        function generateBill() {
+            // $("section:last")
+            $("section:last").show()
+            $("section:first").hide()
+            const cartData = foodDetailsRepo.getCartDetails()
+            $("section:last").children().remove()
+            if (cartData.size == 0) {
+                alert("Add items to cart to gnerate bill!!")
+                viewFood()
+            }
+            else {
+                let totalAmount = 0
+                const cartdataArray = []
+
+                let indiaCurrency = new Intl.NumberFormat('en-IN',
+                    {
+                        style: 'currency',
+                        currency: 'INR'
+                    })
+
+                for (const key of cartData.keys()) {
+                    cartdataArray.push(cartData.get(key))
+                }
+                let layout = `<h2>Your Bill</h2>
+                                     <hr> `
+                //console.log(cartdataArray)
+                for (const item of cartdataArray) {
+
+                    /*  if(max < item.quantity){
+                         max = quantity
+                     } */
+                    max.push(item.quantity)
+                    totalAmount += item.quantity * item.foodPrice
+                    const Amount2 = indiaCurrency.format(item.quantity * item.foodPrice)
+                    layout += `<div>
+                            <p>${item.foodName} : </p><p> ${Amount2}</p>
+                        </div>`
+                }
+
+                totalAmount = indiaCurrency.format(totalAmount)
+                layout += `<hr><p> Toal Amount = ${totalAmount}`
+                layout += `<div><button onclick="onClickCancel()">Cancel</button> <button onclick="onPlaceOrder()">Place Order</button></div> `
+                $("section:last").append(layout)
+
+            }
+
+        }
+
+        function onClickCancel() {
+            viewFood()
+        }
+
+        function onPlaceOrder() {
+            alert(`Your Order has been placed Successfully!!! \nYour Order will be ready within ${Math.max(Number(max)) * Number(4)} min`)
+            foodDetailsRepo.clearCart()
+            console.log(foodDetailsRepo.getCartDetails())
+            viewFood()
+        }
+
+        function aboutUs() {
+            alert("Comming soon :)")
+        }
+        function init() {
+            $("ol>li:last>button").hide()
+            $("section:last").hide()
+            $("ol>li:first>button").click(viewFood)
+            $("ol>li:eq(1)>button").click(myOrders)
+            $("ol>li:eq(2)>button").click(aboutUs)
+            $("ol>li:last>button").click(generateBill)
+        }
+
+        $().ready(init)
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>Online Food Delivery</h1>
+        <hr>
+    </header>
+
+    <nav>
+        <ol>
+            <li><button>View Food</button></li>
+            <li><button>My Orders</button></li>
+            <li><button>About Us</button></li>
+            <li><button>Generate Bill</button></li>
+        </ol>
+    </nav>
+
+
+    <section id="DisplayAllProduct">
+    </section>
+
+    <section id="generatebill">
+    </section>
+
+</body>
+
+</html>

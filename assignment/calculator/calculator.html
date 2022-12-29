@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>calculator</title>
+    <style>
+        table{
+            border-collapse: collapse;
+        }
+
+        table td,th{
+            padding: 0.4rem;
+        }
+    </style>
+    <script>
+        function onSelectOperator() {
+            const operator = document.getElementById("operator").value
+
+            if(operator == 'square' || operator == 'sqrt'){
+                document.getElementById("secondNumber").setAttribute("disabled",'')
+            }
+            else{
+                document.getElementById("secondNumber").disabled = false
+            }
+        }
+
+        function onCalculate() {
+            
+            const value1 = document.getElementById("firstNumber").value
+            const value2 = document.getElementById("secondNumber").value
+            const operator = document.getElementById("operator").value
+            let result = null
+
+            switch(operator){
+                case '+': result = add(value1, value2)
+                    break
+
+                case '-': result = sub(value1, value2)
+                    break
+
+                case '*': result = mul(value1, value2)
+                    break
+
+                case '/': result = div(value1, value2)
+                    break
+
+                case 'square': result = square(value1)
+                    break
+
+                case 'sqrt': result = squareRoot(value1)
+                    break
+
+            }
+
+            if(result != null) {
+                storeLocalStorage(`${value1} ${operator} ${value2}`,result)
+                document.getElementById("result").value = result
+                console.log(getAllTransactions().length)
+                document.getElementsByTagName("input").values = ""
+                load()
+                }
+
+        }
+
+        function previousoperations(transactions) {
+            const section = document.getElementById("previousoperations")
+            section.innerHTML = ""
+            section.innerHTML += `<h2>previous operations</h2>`
+            const table = document.createElement("table")
+            table.setAttribute("border","1")
+            table.innerHTML+=`
+                <thead> 
+                    <tr>
+                        <th>Operation</th>
+                        <th>result</th>
+                    </tr>
+                </thead>
+            `
+            const tbody = document.createElement("tbody")
+
+            for(const value of transactions){
+                const tr = `<tr><td>${value.Transaction}</td>
+                    <td>${value.result}</td></tr>`
+                tbody.innerHTML += tr
+            }
+            
+            table.appendChild(tbody)
+            section.appendChild(table)
+        }
+        
+        function load(){
+            previousoperations(getAllTransactions())
+        }
+        window.addEventListener("load",()=> load())
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Calculator</h1>
+    </header>
+
+    <section>
+        <input type="number" placeholder="First number" id="firstNumber">
+        <select name="operator" id="operator" onchange="onSelectOperator()">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+            <option value="square">square</option>
+            <option value="sqrt">sqrt</option>
+        </select>
+        <input type="number" placeholder="second number" id="secondNumber">
+        <button onclick="onCalculate()">=</button>
+        <input type="text" id="result" disabled>
+    </section>
+
+    <section id="previousoperations">
+        
+    </section>
+
+    <script src="./calculator.js"></script>
+</body>
+</html>

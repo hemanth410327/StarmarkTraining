@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./toll.css">
+    <script src="./toll.js"></script>
+    <script src="../day 2/temp/jquery-3.6.2.min.js"></script>
+    <title>Toll Plasa</title>
+    <script>
+        let amount = null
+        function onChange() {
+             vehicalType = $("#vehicalType").val()
+             amount = tollplasa.vehicalAmount[vehicalType]
+        }
+
+        function clear() {
+            $("input,select").val("")
+        }
+        function onClickAdd() {
+            
+            tollplasa.postTollPlasaDetails(
+                new TollPlasa(
+                    $("#vehicalNumber").val(),
+                    $("#vehicalType").val(),
+                    Number($("#Fee").val()),
+                    new Date($("#Date").val()),
+                )
+            )
+            console.log(tollplasa.getAllDetails())
+            alert("Details added successfully")
+            clear()
+        }
+
+        function onGetReport() {
+            $("section:first").hide()
+            $("table").hide()
+            $("div:last").show(1000)
+        }
+
+        function GenerateReport() {
+            
+            const vehicalType = $("#reportVehicalType").val()
+            if(vehicalType == "Default"){
+                alert("Select vehical type")
+                return
+            }
+            const searchDate = $("#searchDate").val()
+            console.log(searchDate) 
+            const result = generateReportBasedOnVehicalType(vehicalType,searchDate)
+            let totalAmount = 0
+            //tollplasa.vehicalAmount[vehicalType] * result.length
+            // let count = 0
+            //console.log(result)
+            $.each(result, (index, item) => {
+                totalAmount += item.fee
+                // count += 1
+            })
+
+            $("tbody").children("tr").remove()
+            const tr = `<tr>
+                <td>${vehicalType}</td>
+                <td>${result.length}</td>
+                <td>${totalAmount}</td>
+                </tr>`
+
+            $("tbody").append(tr)
+
+            $("table").show(1000)
+
+            //console.log(totalAmount+" ",count)
+        }
+
+        function generateReportBasedOnVehicalType(vehicalType,searchDate) {
+            console.log(searchDate)
+            const data = tollplasa.getAllDetails()
+            return data.filter((e) => e.vehicalType === vehicalType)
+            .filter((e)=>tollplasa.formateDate(new Date(e.date)) == tollplasa.formateDate(new Date(searchDate)))
+        }
+
+function onChangeRoute() {
+    const vehicalRoute = $("#Route").val()
+    if(vehicalRoute == 2){
+        amount=amount + (amount*0.7)
+        }
+    $("#Fee").val(amount)
+
+}
+        function getTollForm() {
+            $("#search").hide()
+            $("table").hide()
+            $("section:first").show(1000)
+        }
+        function init() {
+            $("div:last").hide()
+            $("table").hide()
+            $("#Route").change(onChangeRoute)
+            $('ul>li:first>button').click(getTollForm)
+            $("#vehicalType").change(onChange)
+            $("section>div>button").click(onClickAdd)
+            $("ul>li:eq(1)>button").click(onGetReport)
+            $("div>button").click(GenerateReport)
+        }
+
+        $().ready(init)
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>Nelamangala Toll Plasa</h1>
+        <hr>
+    </header>
+    <div id="nav">
+        <nav>
+            <ul>
+                <li><button>Fill Form</button></li>
+                <li><button>Get Report</button></li>
+            </ul>
+        </nav>
+    </div>
+    
+    <section>
+        <h1>Vehical Toll Form</h1>
+
+        <div>
+            <label>Vehical Number:</label>
+            <input type="text" id="vehicalNumber" required>
+        </div>
+        <div>
+            <label>Vehical Type:</label>
+            <select name="vehicalType" id="vehicalType" required>
+                <option value="Default">Select vehical type</option>
+                <option value="Car">car</option>
+                <option value="Bike">Bike</option>
+                <option value="Bus">Bus</option>
+                <option value="Truck">Truck</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Route:</label>
+            <select name="vehicalType" id="Route" required>
+                <option value="Default">Select Route</option>
+                <option value="1">One way</option>
+                <option value="2">Two way</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Fee:</label>
+             <input type="number" id="Fee" disabled>
+        </div>
+        <div>
+            <label>Date:</label>
+            <input type="date" id="Date" required>
+        </div>
+
+        <div><button>Submit</button></div>
+    </section>
+
+    <div id="search">
+        <h2>Toll Details</h2>
+        <label for="">Select Vehical Type:</label> <select name="vehicalType" id="reportVehicalType">
+            <option value="Default">Select vehical type</option>
+            <option value="Car">car</option>
+            <option value="Bike">Bike</option>
+            <option value="Bus">Bus</option>
+            <option value="Truck">Truck</option>
+        </select>
+        <input type="date" id="searchDate">
+        <button>Generate Report</button>
+        <table border="1.5">
+            <thead>
+                <tr>
+                    <th>Vehical type</th>
+                    <th>Number of Vehicals</th>
+                    <th>Total Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>
