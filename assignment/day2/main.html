@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Temperature convertion</title>
+    <Style>
+        *{
+            margin: 0%;
+            padding: 0%;
+            box-sizing: border-box;
+        }
+        body{
+            margin: 2rem 1rem;
+            display: grid;
+            grid-template-columns:1fr 1fr 1fr;
+            gap: 1rem;
+            grid-auto-rows: minmax(200px);
+        }
+        div{
+            padding: 2rem 2rem;
+            border: 2px solid black;
+            width: 90%;
+        }
+        h2{
+            border-bottom: 1px solid black;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        #favBookContainer{
+            grid-auto-rows: minmax(200px, auto);
+        }
+    </Style>
+</head>
+<body>
+
+    <div>
+        <h2>Temperature from Celsius to Farenheit</h2>    
+        <button onclick="tempConvertion()">Temperature Convertor</button>
+    </div>
+
+    <div id="favBookContainer">
+        <h2>Fav books</h2>
+        <Label>Enter your Favourate Book</Label>
+        <input type="text" id="favBook">
+        <ol id="favBooks"></ol>
+        <button onclick="getData()">Add and Display</button>
+    </div>
+
+    <div>
+        <h2>Currency convertor</h2>
+        <label for="countryFrom">From</label>
+        <select name="countryFrom" id="countryFrom">
+            <option value="">Select country</option>
+            <option value="India">India</option>
+            <option value="USA">USA</option>
+        </select>
+
+        <label for="countryTo">To</label>
+        <select name="countryTo" id="countryTo">
+            <option value="default">Select country</option>
+            <option value="Russia">Russia</option>
+            <option value="France">France</option>
+        </select>
+        <br>
+        <label for="currency">Enter Currency</label>
+        <input type="number" id="currency">
+        <button onclick="calculateCurrenty()">Convert</button>
+        <p id="result"></p>
+    </div>
+
+    <script src="celsiusToF.js"></script>
+    <script src="currencyConverter.js"></script>
+    <script src="FavBooks.js"></script>
+</body>
+</html>
